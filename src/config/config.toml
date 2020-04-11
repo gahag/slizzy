@@ -1,0 +1,28 @@
+[slizzy]
+duration-tolerance = 5
+min-bitrate = 315
+size-factor = 2.3
+size-tolerance = 0.3
+
+[google]
+key = <key>
+
+[beatport]
+custom-search = <cs>
+sim-threshold = 70
+
+[slider]
+sim-threshold = 10
+
+[music2k]
+sim-threshold = 10
+
+[zippyshare]
+custom-search = <cs>
+sim-threshold = 40
+blacklist = [
+	'DANCEDJ\.CLUB',
+	'\[ClapCrate\.\w+\]',
+	'\[RIP\]',
+	'Bass *Boosted',
+]
