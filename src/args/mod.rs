@@ -9,6 +9,9 @@ use crate::{
 	track::Track,
 };
 
+#[cfg(test)]
+mod tests;
+
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Command {
@@ -20,6 +23,7 @@ pub enum Command {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Args {
+	pub log_level: log::Level,
 	pub track: Track,
 	pub metasources: EnumSet<MetaSources>,
 	pub tracksources: EnumSet<TrackSources>,
@@ -36,6 +40,7 @@ where
 			(version: crate_version!())
 			(author: crate_authors!())
 			(about: crate_description!())
+			(@arg verbose: -v ... "level of logging information")
 			(@arg id: +required "the track id to download")
 			(@arg duration: -d --duration +takes_value "specify the track duration")
 			// metasources:
@@ -57,6 +62,7 @@ where
 						track,
 						metasources: parse_metasources(&matches),
 						tracksources: parse_tracksources(&matches),
+						log_level: parse_log_level(&matches),
 					}
 				)
 			)
@@ -71,6 +77,15 @@ where
 			),
 			_ => Err(error)
 		}
+	}
+}
+
+
+fn parse_log_level(matches: &clap::ArgMatches) -> log::Level {
+	match matches.occurrences_of("verbose") {
+		0 => log::Level::Info,
+		1 => log::Level::Debug,
+		_ => log::Level::Trace,
 	}
 }
 

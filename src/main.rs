@@ -52,7 +52,7 @@ fn run() -> anyhow::Result<()> {
 
 
 fn download(args: Args) -> anyhow::Result<()> {
-	let logger = logger::setup();
+	let logger = logger::setup(args.log_level);
 
 	let cfg = match config::load() {
 		Err(error) if error.is_not_found() => {

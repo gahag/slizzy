@@ -3,10 +3,10 @@ use memory_logger::blocking::MemoryLogger;
 use regex::Regex;
 
 
-pub fn setup() -> &'static MemoryLogger {
+pub fn setup(level: log::Level) -> &'static MemoryLogger {
 	MemoryLogger
 		::setup(
-			log::Level::Debug,
+			level,
 			Regex
 				::new("^rslizzy::")
 				.expect("invalid logger target regex")
