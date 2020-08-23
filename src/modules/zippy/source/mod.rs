@@ -272,7 +272,16 @@ async fn handle_item<WSConfig>(
 			return Ok(())
 		},
 		scraper::Data::Available { download, metadata } => (
-			download.map_err(ItemError::Scraping)?,
+			download
+				.map_err(
+					|error| report_wrapped!(
+						ItemStatus::Error(
+							ItemError::Scraping(error)
+						),
+						status,
+						ItemStatus::Error(error) => error
+					)
+				)?,
 			metadata
 		),
 	};
