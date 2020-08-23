@@ -1,13 +1,13 @@
 use crate::{
 	track,
-	web::scraping::{Find, Html, Text},
+	web::scraping::{Attr, Find, Html, Text},
 };
 pub use crate::web::scraping::Error;
 
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Data { // TODO scrap artists
-	pub title: Result<Box<str>, Error>,
+pub struct Data {
+	pub track_id: Result<Box<str>, Error>,
 	pub duration: Result<track::Duration, Error>,
 }
 
@@ -16,7 +16,7 @@ pub fn scrap(doc: &Html) -> Data {
 	log::trace!("scraping html: {:#?}", doc);
 
 	Data {
-		title: scrap_title(doc),
+		track_id: scrap_id(doc),
 		duration: scrap_duration(doc)
 	}
 }
@@ -37,11 +37,14 @@ fn scrap_duration(doc: &Html) -> Result<track::Duration, Error> {
 }
 
 
-fn scrap_title(doc: &Html) -> Result<Box<str>, Error> {
+fn scrap_id(doc: &Html) -> Result<Box<str>, Error> {
+	let artists = doc
+		.find("div.interior-track-actions")?
+		.attr("data-ec-d1")?;
+
 	let name = doc
 		.find("div.interior-title > h1")?
-		.text_first()?
-		.into();
+		.text_first()?;
 
 	let mix = doc
 		.find("div.interior-title > h1.remixed")
@@ -53,10 +56,12 @@ fn scrap_title(doc: &Html) -> Result<Box<str>, Error> {
 
 	Ok(
 		if let Some(mix) = mix {
-			format!("{} ({})", name, mix).into_boxed_str()
+			format!("{} - {} ({})", artists, name, mix)
+				.into_boxed_str()
 		}
 		else {
-			name
+			format!("{} - {}", artists, name)
+				.into_boxed_str()
 		}
 	)
 }
