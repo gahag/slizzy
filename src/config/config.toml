@@ -8,6 +8,8 @@ id-clean = [
 	' ?\(Original Mix\)',
 	' ?\[TraxCrate\.com\]',
 	' ?DANCEDJ\.CLUB',
+	'\.mp3$',
+	'\.wav$',
 ]
 
 [google]
