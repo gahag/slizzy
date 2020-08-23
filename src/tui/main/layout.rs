@@ -14,7 +14,7 @@ impl Root {
 			.direction(Direction::Vertical)
 			.constraints(
 				vec![
-					Constraint::Length(10),
+					Constraint::Length(12), // 10 entries + 2 borders
 					Constraint::Min(5)
 				]
 			)
