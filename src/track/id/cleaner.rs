@@ -13,7 +13,7 @@ pub struct Cleaner {
 
 impl Cleaner {
 	pub fn clean<'a>(&self, id: &'a str) -> Cow<'a, str> {
-		self.pattern.replace(id, "")
+		self.pattern.replace_all(id, "")
 	}
 }
 

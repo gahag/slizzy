@@ -7,7 +7,7 @@ id-clean = [
 	' ?\[slider\.kz\]',
 	' ?\(Original Mix\)',
 	' ?\[TraxCrate\.com\]',
-	' ?DANCEDJ\.CLUB'
+	' ?DANCEDJ\.CLUB',
 ]
 
 [google]
@@ -27,7 +27,6 @@ sim-threshold = 10
 custom-search = <cs>
 sim-threshold = 40
 blacklist = [
-	'DANCEDJ\.CLUB',
 	'\[ClapCrate\.\w+\]',
 	'\[RIP\]',
 	'Bass *Boosted',
