@@ -162,3 +162,22 @@ impl<'a> FindNext<'a> for ElementRef<'a> {
 		Ok(element)
 	}
 }
+
+
+pub trait Attr<'a> {
+	fn attr(&self, name: &str) -> Result<&'a str, Error>;
+}
+
+
+impl<'a> Attr<'a> for ElementRef<'a> {
+	fn attr(&self, name: &str) -> Result<&'a str, Error> {
+		self
+			.value()
+			.attr(name)
+			.ok_or_else(
+				|| Error::NotFound(
+					name.into()
+				)
+			)
+	}
+}

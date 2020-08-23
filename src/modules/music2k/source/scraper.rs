@@ -4,7 +4,7 @@ use derive_more::Deref;
 
 use crate::{
 	track::Duration,
-	web::scraping::{ElementRef, Find, Html, Selector, Text},
+	web::scraping::{Attr, ElementRef, Find, Html, Selector, Text},
 	net::url::Url,
 };
 pub use crate::web::scraping::Error;
@@ -116,13 +116,7 @@ fn scrap_duration(entry: ElementRef) -> Result<Duration, Error> {
 fn scrap_download(entry: ElementRef) -> Result<Url, Error> {
 	let url = entry
 		.find("td.download > a.i-dl")?
-		.value()
-		.attr("href")
-		.ok_or(
-			Error::NotFound(
-				"href".into()
-			)
-		)?;
+		.attr("href")?;
 
 	let url = url
 		.parse::<Url>()

@@ -1,6 +1,6 @@
 use crate::{
 	track,
-	web::scraping::{Find, Html, Text},
+	web::scraping::{Attr, Find, Html, Text},
 };
 pub use crate::web::scraping::Error;
 
@@ -25,13 +25,7 @@ pub fn scrap(doc: &Html) -> Data {
 fn scrap_duration(doc: &Html) -> Result<track::Duration, Error> {
 	let duration = doc
 		.find("meta[itemprop = duration]")?
-		.value()
-		.attr("content")
-		.ok_or(
-			Error::NotFound(
-				"content".into()
-			)
-		)?;
+		.attr("content")?;
 
 	let seconds = duration
 		.split('.')
