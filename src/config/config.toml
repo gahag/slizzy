@@ -20,14 +20,14 @@ custom-search = <cs>
 sim-threshold = 70
 
 [slider]
-sim-threshold = 10
+sim-threshold = 60
 
 [music2k]
-sim-threshold = 10
+sim-threshold = 60
 
 [zippyshare]
 custom-search = <cs>
-sim-threshold = 40
+sim-threshold = 60
 blacklist = [
 	'\[ClapCrate\.\w+\]',
 	'\[RIP\]',
