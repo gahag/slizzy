@@ -1,12 +1,16 @@
 use serde::{Deserialize, Deserializer, de::DeserializeOwned};
 
-use crate::sim::Sim;
+use crate::{
+	sim::Sim,
+	track::IdCleaner,
+};
 
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone)]
 pub struct Config<SearchConfig> {
 	pub sim_threshold: Sim,
 	pub search: SearchConfig,
+	pub id_cleaner: IdCleaner,
 }
 
 
@@ -21,6 +25,7 @@ where
 			Config {
 				sim_threshold: config.beatport.sim_threshold,
 				search: config.beatport.search,
+				id_cleaner: config.slizzy.id_clean,
 			}
 		)
 	}
@@ -29,8 +34,17 @@ where
 
 #[derive(Debug, Deserialize)]
 struct ConfigFile<SearchConfig> where SearchConfig: DeserializeOwned {
+	slizzy: Slizzy,
+
 	#[serde(bound(deserialize = "SearchConfig: DeserializeOwned"))]
 	beatport: Beatport<SearchConfig>,
+}
+
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all(deserialize = "kebab-case"))]
+struct Slizzy {
+	id_clean: IdCleaner,
 }
 
 

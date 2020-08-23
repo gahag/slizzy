@@ -189,6 +189,8 @@ async fn filter_entry(
 	let id = entry.id
 		.map_err(ItemError::Scraping)?;
 
+	let id = config.id_cleaner.clean(&id);
+
 	let similarity = sim::str(
 		&id,
 		&track.id()

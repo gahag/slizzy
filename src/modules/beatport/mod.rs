@@ -11,7 +11,7 @@ pub use config::Config;
 pub use source::{Params as SourceParams, Status, ItemStatus};
 
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone)]
 pub struct Module<WS: websearch::Module> {
 	config: Config<WS::SearchConfig>,
 }

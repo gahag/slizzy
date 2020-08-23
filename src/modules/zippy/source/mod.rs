@@ -185,6 +185,8 @@ async fn filter_entry<WSConfig>(
 		.map_err(ItemError::Scraping)?;
 
 	if let Some(id) = id {
+		let id = config.id_cleaner.clean(&id);
+
 		let similarity = sim::str(
 			&id,
 			&track.id()

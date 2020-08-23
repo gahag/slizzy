@@ -4,7 +4,7 @@ use regex::RegexSet;
 
 use crate::{
 	sim::Sim,
-	track::Duration,
+	track::{IdCleaner, Duration},
 	util::bytes,
 };
 
@@ -16,6 +16,7 @@ pub struct Config<SearchConfig> {
 	pub duration_tolerance: u16,
 	pub size_factor: f32,
 	pub size_tolerance: f32,
+	pub id_cleaner: IdCleaner,
 	pub blacklist: RegexSet,
 }
 
@@ -68,6 +69,7 @@ where
 				duration_tolerance : config.slizzy.duration_tolerance,
 				size_factor        : config.slizzy.size_factor,
 				size_tolerance     : config.slizzy.size_tolerance,
+				id_cleaner         : config.slizzy.id_clean,
 				search             : config.zippyshare.search,
 				sim_threshold      : config.zippyshare.sim_threshold,
 				blacklist,
@@ -91,6 +93,7 @@ struct Slizzy {
 	duration_tolerance: u16,
 	size_factor: f32,
 	size_tolerance: f32,
+	id_clean: IdCleaner,
 }
 
 

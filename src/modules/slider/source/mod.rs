@@ -209,8 +209,10 @@ async fn filter_entry(
 		}
 	}
 
+	let id = config.id_cleaner.clean(&entry.track_id);
+
 	let similarity = sim::str(
-		&entry.track_id,
+		&id,
 		&track.id()
 	);
 

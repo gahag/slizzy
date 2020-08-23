@@ -6,7 +6,7 @@ use crate::{
 	report_wrapped,
 	net::{url::Url, http},
 	sim::{self, Sim},
-	track::{Track, Duration},
+	track::{Track, IdCleaner, Duration},
 	web::scraping,
 };
 use super::scraper;
@@ -90,6 +90,7 @@ fn select<WSError>(
 	item: Result<scraper::Data, http::Error>,
 	track_title: &str,
 	sim_threshold: Sim,
+	id_cleaner: &IdCleaner,
 	progress: &dyn item::progress::Progress<
 		Id = u8,
 		Item = str,
@@ -116,6 +117,8 @@ where
 			|error| report_error(ItemError::TitleNotFound(error))
 		)
 		.ok()?;
+
+	let title = id_cleaner.clean(&title);
 
 	let duration = item.duration
 		.map_err(
@@ -211,7 +214,14 @@ where
 		.collect();
 
 	while let Some((id, item)) = pages.next().await {
-		let duration = select(id, item, title, module.config.sim_threshold, progress);
+		let duration = select(
+			id,
+			item,
+			title,
+			module.config.sim_threshold,
+			&module.config.id_cleaner,
+			progress
+		);
 
 		if duration.is_some() {
 			track.duration = duration;

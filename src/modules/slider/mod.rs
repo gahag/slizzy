@@ -16,7 +16,7 @@ pub use source::{
 };
 
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone)]
 pub struct Module {
 	config: Config,
 }

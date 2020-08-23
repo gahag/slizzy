@@ -4,15 +4,16 @@ use serde::{Deserialize, Deserializer};
 
 use crate::{
 	sim::Sim,
-	track::Duration
+	track::{IdCleaner, Duration}
 };
 
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone)]
 pub struct Config {
 	pub sim_threshold: Sim,
 	pub duration_tolerance: u16,
 	pub bitrate_range: RangeFrom<u16>,
+	pub id_cleaner: IdCleaner,
 }
 
 
@@ -41,6 +42,7 @@ impl<'de> Deserialize<'de> for Config {
 				sim_threshold: config.slider.sim_threshold,
 				duration_tolerance: config.slizzy.duration_tolerance,
 				bitrate_range: RangeFrom { start: config.slizzy.min_bitrate },
+				id_cleaner: config.slizzy.id_clean,
 			}
 		)
 	}
@@ -59,6 +61,7 @@ struct ConfigFile {
 struct Slizzy {
 	duration_tolerance: u16,
 	min_bitrate: u16,
+	id_clean: IdCleaner,
 }
 
 

@@ -4,7 +4,7 @@ mod id;
 use std::convert::TryInto;
 
 pub use duration::{Duration, ParseError as ParseDurationError};
-pub use id::{Id, ParseError as ParseIdError};
+pub use id::{Id, Cleaner as IdCleaner, ParseError as ParseIdError};
 
 
 #[derive(Debug, Clone, Eq)]

@@ -3,6 +3,12 @@ duration-tolerance = 5
 min-bitrate = 315
 size-factor = 2.3
 size-tolerance = 0.3
+id-clean = [
+	' ?\[slider\.kz\]',
+	' ?\(Original Mix\)',
+	' ?\[TraxCrate\.com\]',
+	' ?DANCEDJ\.CLUB'
+]
 
 [google]
 key = <key>

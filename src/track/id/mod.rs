@@ -1,3 +1,4 @@
+mod cleaner;
 mod parser;
 
 use lazy_static::lazy_static;
@@ -6,6 +7,7 @@ use derive_more::{Deref, Display};
 
 use regex::Regex;
 
+pub use cleaner::Cleaner;
 pub use parser::Error as ParseError;
 
 
