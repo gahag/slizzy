@@ -127,8 +127,21 @@ fn scrap_download(doc: &Html, url: &Url) -> Result<Url, Error> {
 	let path2 = &captures["path2"];
 	let expr = &captures["expr"];
 
+	let mut expr_namespace = |name: &str, _args: Vec<f64>| -> Option<f64> {
+		match name {
+			// Custom constants/variables/functions:
+			"a" => Some(1.0),
+			"b" => Some(2.0),
+			"c" => Some(3.0),
+			"d" => Some(2.0),
+
+			// A wildcard to handle all undefined names:
+			_ => None,
+		}
+	};
+
 	let expr_result = fasteval
-		::ez_eval(expr, &mut fasteval::EmptyNamespace)
+		::ez_eval(expr, &mut expr_namespace)
 		.or_else(
 			|error| Err(
 				Error::Format(
