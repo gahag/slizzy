@@ -175,6 +175,8 @@ impl<R> Downloader<R> where R: FnMut(&util::io::Progress) {
 		url: &Url,
 		default_path: &Path
 	) -> Result<(), Error> {
+		let log_failed = || log::warn!("download failed: {}", url);
+
 		// Report 0 before dispatching the request:
 		self.report(
 			&util::io::Progress::default()
@@ -185,21 +187,36 @@ impl<R> Downloader<R> where R: FnMut(&util::io::Progress) {
 			.send()
 			.await
 			.map_err(
-				|error| Error::Http(
-					error.into()
-				)
+				|error| {
+					log_failed();
+
+					Error::Http(
+						error.into()
+					)
+				}
 			)?;
 
 		log::trace!("download response: {:#?}", response);
 
 		let file = Downloader::<R>
 			::get_target_file(&response, default_path)
-			.map_err(Error::Io)?;
+			.map_err(
+				|error| {
+					log_failed();
+					Error::Io(error)
+				}
+			)?;
 
 		log::trace!("download file: {:#?}", file);
 
-		self
+		let result = self
 			.download_body(&mut response, file)
-			.await
+			.await;
+
+		if result.is_err() {
+			log_failed()
+		}
+
+		result
 	}
 }
