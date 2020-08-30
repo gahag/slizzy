@@ -31,6 +31,38 @@ impl Root {
 }
 
 
+pub struct MetaSources {
+	pub beatport: Rect,
+	pub bandcamp: Rect,
+}
+
+
+impl MetaSources {
+	pub fn new(base: Rect) -> Self {
+		let chunks = Layout
+			::default()
+			.direction(Direction::Horizontal)
+			.constraints(
+				vec![
+					Constraint::Percentage(50),
+					Constraint::Percentage(50),
+				]
+			)
+			.split(base);
+
+		let (left, right) = match chunks.as_slice() {
+			[left, right] => (*left, *right),
+			_ => panic!("chunks pattern not matched"),
+		};
+
+		Self {
+			beatport: left,
+			bandcamp: right,
+		}
+	}
+}
+
+
 pub struct TrackSources {
 	pub slider: Rect,
 	pub zippy: Rect,

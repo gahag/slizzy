@@ -8,6 +8,7 @@ use super::{Backend, Key, StdinReader, Terminal};
 use crate::util::future::abortable::AbortHandle;
 pub use crate::modules::{
 	beatport::tui::Widget as BeatportWidget,
+	bandcamp::tui::Widget as BandcampWidget,
 	slider::tui::Widget as SliderWidget,
 	zippy::tui::Widget as ZippyWidget,
 	music2k::tui::Widget as Music2kWidget,
@@ -22,6 +23,7 @@ pub struct Window {
 
 	// Widgets:
 	pub beatport_widget: BeatportWidget,
+	pub bandcamp_widget: BandcampWidget,
 	pub slider_widget: SliderWidget,
 	pub zippy_widget: ZippyWidget,
 	pub music2k_widget: Music2kWidget,
@@ -44,6 +46,7 @@ impl Window {
 
 	fn update_widgets(&mut self) {
 		self.beatport_widget.update();
+		self.bandcamp_widget.update();
 		self.slider_widget.update();
 		self.zippy_widget.update();
 		self.music2k_widget.update();
@@ -52,6 +55,7 @@ impl Window {
 
 	fn draw(&mut self) -> io::Result<()> {
 		let beatport_widget = self.beatport_widget.renderer();
+		let bandcamp_widget = self.bandcamp_widget.renderer();
 		let slider_widget = self.slider_widget.renderer();
 		let zippy_widget = self.zippy_widget.renderer();
 		let music2k_widget = self.music2k_widget.renderer();
@@ -60,10 +64,13 @@ impl Window {
 			|mut frame| {
 				let root_layout = layout::Root::new(frame.size());
 
+				let metasources_layout = layout::MetaSources::new(root_layout.metasources);
+
 				let tracksources_layout = layout::TrackSources::new(root_layout.tracksources);
 
 				{
-					frame.render_widget(beatport_widget, root_layout.metasources);
+					frame.render_widget(beatport_widget, metasources_layout.beatport);
+					frame.render_widget(bandcamp_widget, metasources_layout.bandcamp);
 				}
 
 				{

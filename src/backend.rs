@@ -11,6 +11,7 @@ use crate::{
 		metasource::{Module as MetaSource, MetaSources},
 		tracksource::{Module as TrackSource, TrackSources},
 		beatport::SourceParams as BeatportParams,
+		bandcamp::SourceParams as BandcampParams,
 		slider::SourceProgress as SliderParams,
 		zippy::SourceParams as ZippyParams,
 		music2k::SourceProgress as Music2kParams,
@@ -25,6 +26,10 @@ pub use crate::modules::{
 	beatport::{
 		Module as Beatport,
 		tui::Reporter as BeatportReporter,
+	},
+	bandcamp::{
+		Module as Bandcamp,
+		tui::Reporter as BandcampReporter,
 	},
 	slider::{
 		Module as Slider,
@@ -51,6 +56,9 @@ pub struct Backend {
 	pub beatport: Beatport<Google>,
 	pub beatport_reporter: BeatportReporter<GoogleError>,
 
+	pub bandcamp: Bandcamp<Google>,
+	pub bandcamp_reporter: BandcampReporter<GoogleError>,
+
 	pub slider: Slider,
 	pub slider_reporter: SliderReporter,
 
@@ -73,6 +81,19 @@ impl Backend {
 						track,
 						BeatportParams {
 							progress: Box::new(self.beatport_reporter),
+							// We shouldn't have to clone here, but the params was designed to be owned.
+							websearch: self.google.clone(),
+						}
+					)
+					.await?;
+			}
+
+			if !success && self.metasources.contains(MetaSources::Bandcamp) {
+				success = self.bandcamp
+					.fill_metadata(
+						track,
+						BandcampParams {
+							progress: Box::new(self.bandcamp_reporter),
 							// We shouldn't have to clone here, but the params was designed to be owned.
 							websearch: self.google.clone(),
 						}

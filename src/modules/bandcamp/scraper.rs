@@ -7,8 +7,8 @@ pub use crate::web::scraping::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Data {
-	title: Result<Box<str>, Error>,
-	duration: Result<track::Duration, Error>,
+	pub title: Result<Box<str>, Error>,
+	pub duration: Result<track::Duration, Error>,
 }
 
 

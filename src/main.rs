@@ -73,18 +73,21 @@ fn download(args: Args) -> anyhow::Result<()> {
 
 	let google_cfg = config::read(&cfg)?;
 	let beatport_cfg = config::read(&cfg)?;
+	let bandcamp_cfg = config::read(&cfg)?;
 	let slider_cfg = config::read(&cfg)?;
 	let zippy_cfg = config::read(&cfg)?;
 	let music2k_cfg = config::read(&cfg)?;
 
 	log::debug!("google cfg: {:#?}", google_cfg);
 	log::debug!("beatport cfg: {:#?}", beatport_cfg);
+	log::debug!("bandcamp cfg: {:#?}", bandcamp_cfg);
 	log::debug!("slider cfg: {:#?}", slider_cfg);
 	log::debug!("zippy cfg: {:#?}", slider_cfg);
 	log::debug!("music2k cfg: {:#?}", slider_cfg);
 
 	let google = modules::google::Module::new(google_cfg);
 	let beatport = modules::beatport::Module::new(beatport_cfg);
+	let bandcamp = modules::bandcamp::Module::new(bandcamp_cfg);
 	let slider = modules::slider::Module::new(slider_cfg);
 	let zippy = modules::zippy::Module::new(zippy_cfg);
 	let music2k = modules::music2k::Module::new(music2k_cfg);
@@ -93,6 +96,7 @@ fn download(args: Args) -> anyhow::Result<()> {
 	let input = tui::StdinReader::new();
 
 	let (beatport_widget, beatport_reporter) = modules::beatport::tui::Widget::new();
+	let (bandcamp_widget, bandcamp_reporter) = modules::bandcamp::tui::Widget::new();
 	let (slider_widget, slider_reporter) = modules::slider::tui::Widget::new();
 	let (zippy_widget, zippy_reporter) = modules::zippy::tui::Widget::new();
 	let (music2k_widget, music2k_reporter) = modules::music2k::tui::Widget::new();
@@ -105,6 +109,9 @@ fn download(args: Args) -> anyhow::Result<()> {
 
 		beatport,
 		beatport_reporter,
+
+		bandcamp,
+		bandcamp_reporter,
 
 		slider,
 		slider_reporter,
@@ -125,6 +132,7 @@ fn download(args: Args) -> anyhow::Result<()> {
 		terminal,
 		input,
 		beatport_widget,
+		bandcamp_widget,
 		slider_widget,
 		zippy_widget,
 		music2k_widget,

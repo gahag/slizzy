@@ -21,6 +21,6 @@ pub trait Module: super::Module {
 #[derive(Debug, Hash, EnumSetType)]
 #[enumset(no_ops)]
 pub enum MetaSources {
-	Bandcamp, // TODO
+	Bandcamp,
 	Beatport,
 }
