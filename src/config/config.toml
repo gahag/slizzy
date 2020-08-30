@@ -7,6 +7,7 @@ id-clean = [
 	' ?\[slider\.kz\]',
 	' ?\(Original Mix\)',
 	' ?\[TraxCrate\.com\]',
+	' ?\[www\.jkmk\.net\]',
 	' ?DANCEDJ\.CLUB',
 	'\.mp3$',
 	'\.wav$',
