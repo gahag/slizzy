@@ -102,7 +102,7 @@ fn scrap_download(doc: &Html, url: &Url) -> Result<Url, Error> {
 		.find_regex("script", r#"document\.getElementById\('dlbutton'\)\.href *= *"#)?
 		.text_first()?;
 
-	log::debug!("zippy download script: {}", script);
+	log::debug!("zippy download script:\n{}", script);
 
 	let code_regex = Regex
 		::new(
@@ -133,7 +133,7 @@ fn scrap_download(doc: &Html, url: &Url) -> Result<Url, Error> {
 			"a" => Some(1.0),
 			"b" => Some(2.0),
 			"c" => Some(3.0),
-			"d" => Some(2.0),
+			"d" => Some(4.0),
 
 			// A wildcard to handle all undefined names:
 			_ => None,
