@@ -21,7 +21,9 @@ mod tests {
 
 	#[test]
 	fn test_guess_extension() {
-		let _ = simple_logger::init(); // Enable loggin to stderr for this test.
+		// Only enable the following when running this test separately, as it impregnates
+		// other tests.
+		// let _ = simple_logger::init(); // Enable logging to stderr for this test.
 
 		assert_eq!(
 			guess_extension("audio/mpeg"),
