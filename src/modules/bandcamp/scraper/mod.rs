@@ -12,7 +12,8 @@ pub use crate::web::scraping::Error;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Data {
-	pub title: Result<Box<str>, Error>,
+	/// This can be the track id or title, depending on the label.
+	pub track: Result<Box<str>, Error>,
 	pub duration: Result<track::Duration, Error>,
 }
 
@@ -21,7 +22,7 @@ pub fn scrap(doc: &Html) -> Data {
 	log::trace!("scraping html: {:#?}", doc);
 
 	Data {
-		title: scrap_title(doc),
+		track: scrap_track(doc),
 		duration: scrap_duration(doc)
 	}
 }
@@ -64,11 +65,11 @@ fn scrap_duration(doc: &Html) -> Result<track::Duration, Error> {
 }
 
 
-fn scrap_title(doc: &Html) -> Result<Box<str>, Error> {
-	let title = doc
+fn scrap_track(doc: &Html) -> Result<Box<str>, Error> {
+	let track = doc
 		.find("h2.trackTitle")?
 		.text_first()?
 		.into();
 
-	Ok(title)
+	Ok(track)
 }

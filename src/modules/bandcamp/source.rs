@@ -88,7 +88,7 @@ async fn scrap(url: &Url) -> Result<scraper::Data, http::Error> {
 fn select<WSError>(
 	id: u8,
 	item: Result<scraper::Data, http::Error>,
-	track_title: &str,
+	track: &Track,
 	sim_threshold: Sim,
 	id_cleaner: &IdCleaner,
 	progress: &dyn item::progress::Progress<
@@ -112,7 +112,7 @@ where
 		)
 		.ok()?;
 
-	let item_track_title = item.title
+	let item_track = item.track
 		.map_err(
 			|error| report_error(ItemError::TitleNotFound(error))
 		)
@@ -126,12 +126,21 @@ where
 
 	progress.item(
 		id,
-		&format!("{} [{}]", item_track_title, duration)
+		&format!("{} [{}]", item_track, duration)
 	);
 
-	let item_track_title = id_cleaner.clean(&item_track_title);
+	let item_track = id_cleaner.clean(&item_track);
 
-	let similarity = sim::str(&item_track_title, track_title);
+	let similarity = sim::str(
+		&item_track,
+		// Track can be the title or the entire ID, depending on the label.
+		if item_track.contains(" - ") {
+			track.id().as_ref()
+		}
+		else {
+			track.id().title()
+		}
+	);
 
 	if similarity >= sim_threshold {
 		progress.item_status(id, &ItemStatus::Selected);
@@ -157,10 +166,6 @@ pub async fn fill_metadata<WS>(
 where
 	WS: websearch::Module,
 {
-	let track_title = track
-		.id()
-		.title();
-
 	let progress = params.progress.as_ref();
 
 	if track.duration.is_none() {
@@ -217,7 +222,7 @@ where
 		let duration = select(
 			id,
 			item,
-			track_title,
+			track,
 			module.config.sim_threshold,
 			&module.config.id_cleaner,
 			progress

@@ -17,7 +17,7 @@ fn test_scrap() {
 	assert_eq!(
 		data,
 		Data {
-			title: Ok("Bolam - Who Knows".into()),
+			track: Ok("Bolam - Who Knows".into()),
 			duration: Ok(Duration::new(8, 41)),
 		}
 	);
