@@ -39,6 +39,7 @@ pub enum ItemError {
 #[derive(Debug)]
 pub enum ItemStatus {
 	Selected,
+	Filtered,
 	TitleMismatch(Sim),
 	Error(ItemError),
 }
@@ -200,25 +201,36 @@ where
 		urls.size_hint()
 	);
 
-	let mut pages: futures::stream::FuturesUnordered<_> = urls
+	let items = urls
 		.enumerate()
-		.map(
+		.filter(
 			|(id, url)| {
-				let id = id as u8;
+				let id = *id as u8;
 
 				progress.item(id, url.as_ref());
 
-				async move {
-					(
-						id,
-						scrap(&url).await
-					)
+				let is_track = url.as_ref().contains("/track/");
+
+				if !is_track {
+					progress.item_status(id, &ItemStatus::Filtered);
 				}
+
+				is_track
+			}
+		);
+
+	let mut items: futures::stream::FuturesUnordered<_> = items
+		.map(
+			|(id, url)| async move {
+				(
+					id as u8,
+					scrap(&url).await
+				)
 			}
 		)
 		.collect();
 
-	while let Some((id, item)) = pages.next().await {
+	while let Some((id, item)) = items.next().await {
 		let duration = select(
 			id,
 			item,
