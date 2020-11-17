@@ -75,6 +75,14 @@ impl<'a> Renderer<'a> {
 								.fg(Color::Green),
 						),
 
+						ItemStatus::Filtered => (
+							format!("{} | not a track page", label)
+								.into(),
+							Style
+								::default()
+								.fg(Color::Yellow),
+						),
+
 						ItemStatus::TitleMismatch(sim) => (
 							format!(
 								"{} | title mismatch: {}% similarity below threshold",

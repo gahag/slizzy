@@ -41,6 +41,7 @@ impl<E: Error> From<&BackendStatus<E>> for Status {
 pub enum ItemStatus {
 	Fetching,
 	Selected,
+	Filtered,
 	TitleMismatch(Sim),
 	Error(Box<str>),
 }
@@ -55,6 +56,7 @@ impl From<&BackendItemStatus> for ItemStatus {
 	fn from(status: &BackendItemStatus) -> Self {
 		match status {
 			BackendItemStatus::Selected => ItemStatus::Selected,
+			BackendItemStatus::Filtered => ItemStatus::Filtered,
 			BackendItemStatus::TitleMismatch(sim) => ItemStatus::TitleMismatch(*sim),
 			BackendItemStatus::Error(error) => ItemStatus::Error(
 				error
