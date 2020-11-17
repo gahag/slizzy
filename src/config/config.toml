@@ -5,12 +5,14 @@ size-factor = 2.3
 size-tolerance = 0.3
 id-clean = [
 	' ?\[slider\.kz\]',
-	' ?\(Original Mix\)',
+	' ?\(?Original Mix\)?',
 	' ?\[TraxCrate\.com\]',
 	' ?\[www\.jkmk\.net\]',
+	' ?-?www\.groovytunes\.org',
 	' ?DANCEDJ\.CLUB',
 	'\.mp3$',
 	'\.wav$',
+	'Various Artists',
 ]
 
 [google]
