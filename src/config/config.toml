@@ -9,6 +9,7 @@ id-clean = [
 	' ?\[TraxCrate\.com\]',
 	' ?\[www\.jkmk\.net\]',
 	' ?-?www\.groovytunes\.org',
+	' ?www\.techdeephouse\.com',
 	' ?DANCEDJ\.CLUB',
 	'\.mp3$',
 	'\.wav$',
