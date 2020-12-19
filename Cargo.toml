@@ -1,6 +1,6 @@
 [package]
 name = "rslizzy"
-version = "0.1.1"
+version = "0.1.2"
 description = """
 Slizzy is a program and a library to search for tracks and download slider.kz, music2k.com
 and zippyshare.com objects."""
