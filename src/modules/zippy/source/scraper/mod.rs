@@ -110,30 +110,6 @@ fn scrap_download(doc: &Html, url: &Url) -> Result<Url, Error> {
 	let code_regex = Regex
 		::new(
 			r#"(?x)
-				var \s+ a \s* = \s* (?P<a>[0-9]+)\s*;
-			"#
-		)
-		.expect("invalid regex");
-
-	let vars = code_regex
-		.captures(script)
-		.ok_or(
-			Error::NotFound(
-				"download url (vars)".into()
-			)
-		)?;
-
-	let var_a: f64 = vars["a"]
-		.parse()
-		.map_err(
-			|_| Error::NotFound(
-				"download url (var a)".into()
-			)
-		)?;
-
-	let code_regex = Regex
-		::new(
-			r#"(?x)
 				document\.getElementById\('dlbutton'\)\.href \s* = \s*
 				"(?P<path1>.*?)"  \s* \+ \s*
 				\((?P<expr>.*?)\) \s* \+ \s*
@@ -154,22 +130,8 @@ fn scrap_download(doc: &Html, url: &Url) -> Result<Url, Error> {
 	let path2 = &captures["path2"];
 	let expr = &captures["expr"];
 
-	let expr = expr.replace("Math.pow", "pow");
-
-	let mut expr_namespace = move |name: &str, args: Vec<f64>| -> Option<f64> {
-		match (name, &args[..]) {
-			// Custom constants/variables/functions:
-			("a", []) => Some(var_a),
-			("b", []) => Some(3.0),
-			("pow", [x, y]) => Some(x.powf(*y)),
-
-			// A wildcard to handle all undefined names:
-			_ => None,
-		}
-	};
-
 	let expr_result = fasteval
-		::ez_eval(&expr, &mut expr_namespace)
+		::ez_eval(&expr, &mut fasteval::EmptyNamespace)
 		.or_else(
 			|error| Err(
 				Error::Format(

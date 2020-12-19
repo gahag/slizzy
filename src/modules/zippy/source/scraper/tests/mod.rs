@@ -11,19 +11,19 @@ fn test_scrap() {
 
 	let doc = scraping::Html::parse_document(&doc);
 
-	let url = "https://www111.zippyshare.com/v/kctFOhgh/file.html"
+	let url = "https://www96.zippyshare.com/v/qRdAx7uY/file.html"
 		.try_into()
 		.expect("invalid source url");
 
 	let data = scrap(&doc, &url);
 
-	let download_url = "https://www111.zippyshare.com/d/kctFOhgh/1643035/Mind%2520Against%2520-%2520Walking%2520Away%2520%2528Original%2520Mix%2529%2520%255bwww.jkmk.net%255d.wav"
+	let download_url = "https://www96.zippyshare.com/d/qRdAx7uY/41820/In%2520Verruf%2520-%2520GHS06%2520%2528Original%2520Mix%2529%2520-%2520trax4mix.xyz.mp3"
 		.try_into()
 		.expect("invalid download url");
 
-	let track_id = "Mind Against - Walking Away (Original Mix) [www.jkmk.net].wav".into();
+	let track_id = "In Verruf - GHS06 (Original Mix) - trax4mix.xyz.mp3".into();
 
-	let preview_url = "https://www111.zippyshare.com/downloadMusicHQ?key=kctFOhgh"
+	let preview_url = "https://www96.zippyshare.com/downloadMusicHQ?key=qRdAx7uY"
 		.try_into()
 		.expect("invalid preview url");
 
@@ -32,7 +32,7 @@ fn test_scrap() {
 		Data::Available { download, metadata: Metadata { id, size, preview } } => {
 			assert_eq!(download, Ok(download_url));
 			assert_eq!(id, Ok(Some(track_id)));
-			assert_eq!(size, Ok(75130472));
+			assert_eq!(size, Ok(14858322));
 			assert_eq!(preview, Ok(preview_url));
 		}
 	}
