@@ -102,10 +102,14 @@ fn select<WSError>(
 where
 	WSError: std::error::Error,
 {
-	let report_error = |error| progress.item_status(
-		id,
-		&ItemStatus::Error(error)
-	);
+	let report_error = |error| {
+		log::error!("bandcamp error: {}", error);
+
+		progress.item_status(
+			id,
+			&ItemStatus::Error(error)
+		);
+	};
 
 	let item = item
 		.map_err(
