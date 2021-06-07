@@ -30,64 +30,64 @@ pub fn scrap(doc: &Html) -> Data {
 }
 
 
-#[derive(Debug, Deserialize)]
-struct AdditionalProperty {
-	name: String,
-	value: f64,
-}
-
-
-#[derive(Debug)]
-struct AdditionalProperties(Box<[AdditionalProperty]>);
-
-impl<'de> serde::Deserialize<'de> for AdditionalProperties {
-	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-	where
-		D: serde::Deserializer<'de>
-	{
-		struct SkipInvalid;
-
-		impl<'de> serde::de::Visitor<'de> for SkipInvalid {
-			type Value = AdditionalProperties;
-
-			fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-				formatter.write_str("additionalProperty array")
-			}
-
-			fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
-			where
-				A: serde::de::SeqAccess<'de>,
-			{
-				#[derive(Deserialize)]
-				#[serde(untagged)]
-				enum NoneOnError {
-					Some(AdditionalProperty),
-					None(serde::de::IgnoredAny),
-				}
-
-				let mut vec = Vec::new();
-
-				while let Some(item) = seq.next_element::<NoneOnError>()? {
-					if let NoneOnError::Some(value) = item {
-						vec.push(value);
-					}
-				}
-
-				Ok(
-					AdditionalProperties(vec.into())
-				)
-			}
-		}
-
-		deserializer.deserialize_seq(SkipInvalid)
-	}
+#[derive(Debug, Default)]
+struct AdditionalProperties {
+	duration_secs: Option<f64>,
 }
 
 
 #[derive(Debug, Deserialize)]
 struct ApplicationData {
 	#[serde(alias = "additionalProperty")]
+	#[serde(deserialize_with = "deserialize_properties")]
 	additional_properties: AdditionalProperties,
+}
+
+
+fn deserialize_properties<'de, D>(deserializer: D) -> Result<AdditionalProperties, D::Error>
+where
+	D: serde::Deserializer<'de>
+{
+	struct SkipInvalid;
+
+	impl<'de> serde::de::Visitor<'de> for SkipInvalid {
+		type Value = AdditionalProperties;
+
+		fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+			formatter.write_str("additionalProperty array")
+		}
+
+		fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+		where
+			A: serde::de::SeqAccess<'de>,
+		{
+			let mut properties = AdditionalProperties::default();
+
+			#[derive(Deserialize)]
+			#[serde(untagged)]
+			enum Property<'a> {
+				FloatProp {
+					name: &'a str,
+					value: f64,
+				},
+				None(serde::de::IgnoredAny),
+			}
+
+			while let Some(item) = seq.next_element::<Property>()? {
+				match item {
+					Property::FloatProp { name: "duration_secs", value } => {
+						properties.duration_secs = Some(value);
+					}
+
+					_ => { }
+				}
+			}
+
+			Ok(properties)
+		}
+	}
+
+	deserializer.deserialize_seq(SkipInvalid)
 }
 
 
@@ -104,10 +104,9 @@ fn scrap_duration(doc: &Html) -> Result<track::Duration, Error> {
 			)
 		)?;
 
-	let duration_secs = application_data.additional_properties.0
-		.iter()
-    .find(|prop| prop.name == "duration_secs")
-    .map(|prop| prop.value)
+	let duration_secs = application_data
+		.additional_properties
+		.duration_secs
     .ok_or_else(
 			|| Error::Format("missing duration_secs property".into())
 		)?;
