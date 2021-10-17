@@ -145,6 +145,7 @@ impl<'a> Request<'a> {
 		let (mut parts, body) = isahc::http::Request
 			::builder()
 			.redirect_policy(RedirectPolicy::Limit(5))
+			.ssl_options(isahc::config::SslOption::DANGER_ACCEPT_INVALID_CERTS)
 			.method(self.method)
 			.uri(uri)
 			.body(self.body)
