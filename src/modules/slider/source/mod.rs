@@ -138,7 +138,12 @@ async fn fetch_info(entry: &Entry) -> Result<Data, ItemError> {
 			format!("{}.mp3", entry.url)
 		)
 		.expect("invalid url")
-		.append_query("extra", &entry.extra)
+		.append_query(
+			"extra",
+			entry.extra
+				.as_deref()
+				.unwrap_or("null") // The parameter must be present even when null.
+		)
 		.assemble();
 
 	log::debug!("info url: {}", url);
@@ -292,7 +297,12 @@ async fn handle_item(
 				.push_path(
 					format!("{}.mp3", entry.track_id)
 				)?
-				.append_query("extra", &entry.extra)
+				.append_query(
+					"extra",
+					entry.extra
+						.as_deref()
+						.unwrap_or("null") // The parameter must be present even when null.
+				)
 				.assemble()
 		)
 	};

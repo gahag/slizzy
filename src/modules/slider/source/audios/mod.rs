@@ -20,7 +20,7 @@ pub struct Entry {
 
 	pub duration: Duration,
 
-	pub extra: Box<str>,
+	pub extra: Option<Box<str>>,
 }
 
 
